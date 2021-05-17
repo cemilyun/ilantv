@@ -4,7 +4,7 @@ session_start();
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>İlan Tv</title>
+        <title>İlanTv</title>
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
         <meta content="ilan tv" name="keywords">
         <meta content="IlanTv ilan vermek çok basit." name="description">
