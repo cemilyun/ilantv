@@ -1,6 +1,6 @@
 <?php include 'topbar.php';
       include 'baglanti.php';
-      $sorgu = $conn->query("SELECT adi FROM kategoriler");
+      $sorgu = $conn->query("SELECT * FROM kategoriler");
       $cikti = $sorgu->fetchAll(PDO::FETCH_ASSOC);
  ?>     
         
@@ -13,7 +13,7 @@
                             <ul class="navbar-nav">
                                 <?php foreach ($cikti as $k) {
                                     ?><li class="nav-item">
-                                    <a class="nav-link" href="#"><i class="fas fa-angle-right"></i><?php echo $k["adi"] ?></a>
+                                    <a class="nav-link" href="product-list?kategori=<?php echo $k["id"] ?>"><i class="fas fa-angle-right"></i><?php echo $k["adi"] ?></a>
                                 </li><?php
                                 } ?>
 

@@ -54,12 +54,10 @@ session_start();
 
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto">
-                            <a href="index.php" class="nav-item nav-link active">Anasayfa</a>
-                            <a href="product-list.php" class="nav-item nav-link">İlanlar</a>
-                            <a href="product-detail.php" class="nav-item nav-link">İlan Detay</a>
-                            <a href="cart.php" class="nav-item nav-link">Sepet</a>
-                            <a href="checkout.php" class="nav-item nav-link">Kontrol</a>
-                            <a href="contact.php" class="nav-item nav-link">İletişim</a>
+                            <a href="index" class="nav-item nav-link active">Anasayfa</a>
+                            <a href="cart" class="nav-item nav-link">Sepet</a>
+                            <a href="checkout" class="nav-item nav-link">Kontrol</a>
+                            <a href="contact" class="nav-item nav-link">İletişim</a>
                         </div>
 
                         <?php
@@ -113,11 +111,7 @@ session_start();
                     </div>
                     <div class="col-md-3">
                         <div class="user">
-                            <a href="wishlist.html" class="btn wishlist">
-                                <i class="fa fa-heart"></i>
-                                <span>(0)</span>
-                            </a>
-                            <a href="cart.html" class="btn cart">
+                            <a href="cart.php" class="btn cart">
                                 <i class="fa fa-shopping-cart"></i>
                                 <span>(0)</span>
                             </a>
