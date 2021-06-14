@@ -18,7 +18,29 @@ if (isset($_GET['urun'])) {
      header('location:index');
         exit;
 }
+if (isset($_POST['yorumgonder'])) {
+    $name=$_POST['name'];
+    $email=$_POST['email'];
+    $stars=$_POST['stars'];
+    $comment=$_POST['comment'];
+    $urunid=$_POST['urunid'];
 
+    $sorgu = $conn->prepare("INSERT INTO yorumlar (name, email, stars, comment, urunid) VALUES (?,?,?,?,?) ");
+    $sorgu->bindParam(1,$name,PDO::PARAM_STR);
+    $sorgu->bindParam(2,$email,PDO::PARAM_STR);
+    $sorgu->bindParam(3,$stars,PDO::PARAM_INT);
+    $sorgu->bindParam(4,$comment,PDO::PARAM_STR);
+    $sorgu->bindParam(5,$urunid,PDO::PARAM_INT);
+    $sorgu->execute();
+    if($sorgu->rowCount() > 0){
+        echo '<script>alert("Yorum başarıyla gönderildi.")</script>';
+        header("Refresh: 0;");
+
+    }else{
+        echo '<script>alert("Yorum gönderilirken bir hata ile karşılaşıldı.")</script>';
+        header("Refresh: 0;");
+    }
+}
 include 'topbar.php'; ?>
 
 <!-- Breadcrumb Start -->
@@ -80,42 +102,45 @@ include 'topbar.php'; ?>
                                 </p>
                             </div>
                             <div id="reviews" class="container tab-pane fade">
+                                <?php $yorumlars = $conn->prepare("SELECT * FROM yorumlar where urunid=:id");
+                                $yorumlars->execute(array('id' => strip_tags(htmlspecialchars($_GET['urun'])))); 
+                                while ($comment = $yorumlars->fetch(PDO::FETCH_ASSOC)) { ?>
                                 <div class="reviews-submitted">
-                                    <div class="reviewer">Phasellus Gravida - <span>01 Jan 2020</span></div>
+                                    <div class="reviewer"><?php echo $comment['name'] ?> <span><?php echo $comment['time'] ?></span></div>
                                     <div class="ratting">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
+                                        <?php for ($i=0; $i <$comment['stars'] ; $i++) { ?>
+                                           <i class="fa fa-star"></i>
+                                        <?php } ?>
+                                        
+                                        
                                     </div>
                                     <p>
-                                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+                                        <?php echo $comment['comment']; ?>
                                     </p>
                                 </div>
+                                <?php } ?>
                                 <div class="reviews-submit">
-                                    <h4>Give your Review:</h4>
-                                    <div class="ratting">
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
+                                    <h4>Yorum Yapın!</h4>
+                                    <form action="" method="POST">
                                     <div class="row form">
-                                        <div class="col-sm-6">
-                                            <input type="text" placeholder="Name">
+                                        <div class="col-sm-4">
+                                            <input type="text" name="name" placeholder="İsim" required="">
                                         </div>
                                         <div class="col-sm-6">
-                                            <input type="email" placeholder="Email">
+                                            <input type="email" name="email" placeholder="Email" required="">
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="number" name="stars" placeholder="Puan(1-5)" min="1" max="5" required="">
                                         </div>
                                         <div class="col-sm-12">
-                                            <textarea placeholder="Review"></textarea>
+                                            <textarea name="comment" placeholder="Yorum" required=""></textarea>
                                         </div>
                                         <div class="col-sm-12">
-                                            <button>Submit</button>
+                                            <input type="hidden" name="urunid" value="<?php echo $urun['id'] ?>">
+                                            <button type="submit" name="yorumgonder">Gönder</button>
                                         </div>
                                     </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -142,22 +167,14 @@ include 'topbar.php'; ?>
                             <div class="product-item">
                                 <div class="product-title">
                                     <a href="#"><?php echo $diger['title'] ?></a>
-                                    <div class="ratting">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
                                 </div>
                                 <div class="product-image">
-                                    <a href="product-detail.html">
+                                    <a href="product-detail?urun=<?php echo $diger['id'] ?>">
                                         <img src="<?php echo $diger['image'] ?>" alt="Product Image" style="width: 100%; height: 200px;">
                                     </a>
                                 </div>
                                 <div class="product-price">
-                                    <h3><span>$</span>99</h3>
-                                    <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Buy Now</a>
+                                    <h3><span>₺</span><?php echo $diger['amount'] ?></h3>
                                 </div>
                             </div>
                         </div>
