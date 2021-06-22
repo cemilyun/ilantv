@@ -15,8 +15,8 @@ if (isset($_GET['urun'])) {
         $urun = $urunsor->fetch(PDO::FETCH_ASSOC);
     }
 } else {
-     header('location:index');
-        exit;
+   header('location:index');
+   exit;
 }
 if (isset($_POST['yorumgonder'])) {
     $name=$_POST['name'];
@@ -105,65 +105,77 @@ include 'topbar.php'; ?>
                                 <?php $yorumlars = $conn->prepare("SELECT * FROM yorumlar where urunid=:id");
                                 $yorumlars->execute(array('id' => strip_tags(htmlspecialchars($_GET['urun'])))); 
                                 while ($comment = $yorumlars->fetch(PDO::FETCH_ASSOC)) { ?>
-                                <div class="reviews-submitted">
-                                    <div class="reviewer"><?php echo $comment['name'] ?> <span><?php echo $comment['time'] ?></span></div>
-                                    <div class="ratting">
-                                        <?php for ($i=0; $i <$comment['stars'] ; $i++) { ?>
-                                           <i class="fa fa-star"></i>
-                                        <?php } ?>
-                                        
-                                        
-                                    </div>
-                                    <p>
+                                    <div class="reviews-submitted">
+                                        <div class="reviewer"><?php echo $comment['name'] ?> <span><?php echo $comment['time'] ?></span></div>
+                                        <div class="ratting">
+                                            <?php for ($i=0; $i <$comment['stars'] ; $i++) { ?>
+                                             <i class="fa fa-star"></i>
+                                         <?php } ?>
+
+
+                                     </div>
+                                     <p>
                                         <?php echo $comment['comment']; ?>
                                     </p>
                                 </div>
-                                <?php } ?>
+                            <?php } ?>
+                            <?php 
+
+                            if (isset($_SESSION['mail'])) { ?>
                                 <div class="reviews-submit">
+
                                     <h4>Yorum Yapın!</h4>
                                     <form action="" method="POST">
-                                    <div class="row form">
-                                        <div class="col-sm-4">
-                                            <input type="text" name="name" placeholder="İsim" required="">
+                                        <div class="row form">
+                                            <div class="col-sm-4">
+                                                <input type="text" name="name" placeholder="İsim" required="">
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <input type="email" name="email" placeholder="Email" required="">
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <input type="number" name="stars" placeholder="Puan(1-5)" min="1" max="5" required="">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <textarea name="comment" placeholder="Yorum" required=""></textarea>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="urunid" value="<?php echo $urun['id'] ?>">
+                                                <button type="submit" name="yorumgonder">Gönder</button>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-6">
-                                            <input type="email" name="email" placeholder="Email" required="">
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <input type="number" name="stars" placeholder="Puan(1-5)" min="1" max="5" required="">
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <textarea name="comment" placeholder="Yorum" required=""></textarea>
-                                        </div>
-                                        <div class="col-sm-12">
-                                            <input type="hidden" name="urunid" value="<?php echo $urun['id'] ?>">
-                                            <button type="submit" name="yorumgonder">Gönder</button>
-                                        </div>
-                                    </div>
                                     </form>
                                 </div>
+                            <?php }else{ ?>
+                                <div id="description" class="container tab-pane active">
+                                <h4>Giriş Yapın !</h4>
+                                <p>
+                                    Yorum yapmak için lütfen giriş yapın.
+                                </p>
                             </div>
+                            <?php } ?>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="product">
-                    <div class="section-header">
-                        <h1>Benzer İlanlar</h1>
-                    </div>
+            <div class="product">
+                <div class="section-header">
+                    <h1>Benzer İlanlar</h1>
+                </div>
 
-                    <div class="row align-items-center product-slider product-slider-3">
+                <div class="row align-items-center product-slider product-slider-3">
 
-                        <?php 
+                    <?php 
 
-                        $digersor = $conn->prepare("SELECT * FROM urunler where kategori=:kategori and id!=:id");
-                        $digersor->execute(array(
-                            'kategori' => $urun['kategori'],
-                            'id' => $urun['id']
-                        ));
+                    $digersor = $conn->prepare("SELECT * FROM urunler where kategori=:kategori and id!=:id");
+                    $digersor->execute(array(
+                        'kategori' => $urun['kategori'],
+                        'id' => $urun['id']
+                    ));
 
-                        while ($diger = $digersor->fetch(PDO::FETCH_ASSOC)) { ?>
-                            <div class="col-lg-3">
+                    while ($diger = $digersor->fetch(PDO::FETCH_ASSOC)) { ?>
+                        <div class="col-lg-3">
                             <div class="product-item">
                                 <div class="product-title">
                                     <a href="#"><?php echo $diger['title'] ?></a>
@@ -178,26 +190,26 @@ include 'topbar.php'; ?>
                                 </div>
                             </div>
                         </div>
-                        <?php } ?>
+                    <?php } ?>
 
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Side Bar Start -->
-            <div class="col-lg-4 sidebar">
-                <div class="sidebar-widget category">
-                    <h2 class="title">Kategori</h2>
-                    <nav class="navbar bg-light">
+        <!-- Side Bar Start -->
+        <div class="col-lg-4 sidebar">
+            <div class="sidebar-widget category">
+                <h2 class="title">Kategori</h2>
+                <nav class="navbar bg-light">
+                    <ul class="navbar-nav">
                         <ul class="navbar-nav">
-                            <ul class="navbar-nav">
-                        <?php foreach ($cikti as $k) {
-                            ?><li class="nav-item">
-                                <a class="nav-link" href="product-list?kategori=<?php echo $k["id"] ?>"><i class="fas fa-angle-right"></i><?php echo $k["adi"] ?></a>
-                                </li><?php
-                            } ?>
+                            <?php foreach ($cikti as $k) {
+                                ?><li class="nav-item">
+                                    <a class="nav-link" href="product-list?kategori=<?php echo $k["id"] ?>"><i class="fas fa-angle-right"></i><?php echo $k["adi"] ?></a>
+                                    </li><?php
+                                } ?>
 
-                        </ul>
+                            </ul>
                         </ul>
                     </nav>
                 </div>

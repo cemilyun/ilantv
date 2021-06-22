@@ -169,19 +169,4 @@
                 </div>
             </div>
         </div>
-        <!-- Category End-->       
-        
-        <!-- Call to Action Start -->
-        <div class="call-to-action">
-            <div class="container-fluid">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h1>Tüm sorularınız için.</h1>
-                    </div>
-                    <div class="col-md-6">
-                        <a href="tel:0123456789">+90-531-088-9707</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Call to Action End -->    
+        <!-- Category End-->   

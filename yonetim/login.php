@@ -1,29 +1,40 @@
 <?php
+session_start();
+include '../baglanti.php';
 
 if (isset($_POST["girisform"])) {
-  session_start();
-  $email = $_POST['email'];
+  $mail = $_POST['mail'];
   $password = $_POST['password'];
-  if ($email == "cem@info.com" && $password == "123456789") {
-    $_SESSION["login"] = "true";
-    $_SESSION["user"] = $email;
-    $_SESSION["pass"] = $password;
-    $alert = array
-    (
-      'type' => "success",
-      'msg' => "Başarıyla giriş yaptınız !",
-      'second' => "2",
-      'url' => "index.php"
+
+  $query ="SELECT * FROM uyeler WHERE mail=:mail AND password=:password AND status = 1";
+  $statement = $conn->prepare($query);  
+    $statement->execute(  
+       array(  
+          'mail' => $_POST["mail"],  
+          'password' => sha1(md5($_POST["password"]))  
+      )  
+   );  
+  $count = $statement->rowCount();  
+    if($count > 0)  
+    {  
+       $_SESSION["mail"] = $_POST["mail"];  
+       $alert = array
+       (
+        'type' => "success",
+        'msg' => "Başarıyla giriş yaptınız. Anasayfaya yönlendiriliyorsunuz.",
+        'second' => "2",
+        'url' => "index.php"
     );
-  }else{
+   }else  
+   {  
     $alert = array
-    (
-      'type' => "danger",
-      'msg' => "Hatalı şifre veya kullanıcı adı !",
-      'second' => "2",
-      'url' => "login.php"
-    );
-  }
+       (
+        'type' => "danger",
+        'msg' => "Hatalı şifre veya kullanıcı adı !",
+        'second' => "2",
+        'url' => "login.php"
+    ); 
+}  
 }
 
 
@@ -68,7 +79,7 @@ if (isset($_POST["girisform"])) {
             <?php } ?>
           <?php } ?>
           <div class="input-group mb-3">
-            <input type="email" class="form-control" name="email" placeholder="Email">
+            <input type="email" class="form-control" name="mail" placeholder="Email">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-envelope"></span>
