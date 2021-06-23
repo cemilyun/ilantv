@@ -1,4 +1,15 @@
 <?php include 'baglanti.php';
+
+if (isset($_GET['sepetekle'])) {
+
+    $urun = $_GET['urun'];
+
+    setcookie('urun['.$urun.']',$urun,time() + 86400 );
+    header('location:product-detail?urun='.$urun);
+    exit;
+
+}
+
 $sorgu = $conn->query("SELECT * FROM kategoriler");
 $cikti = $sorgu->fetchAll(PDO::FETCH_ASSOC);
 if (isset($_GET['urun'])) {
@@ -75,7 +86,7 @@ include 'topbar.php'; ?>
                                     <p>₺<?php echo $urun['amount'] ?></p>
                                 </div>
                                 <div class="action">
-                                    <a class="btn" href="#"><i class="fa fa-shopping-cart"></i>Sepete Ekle</a>
+                                    <a class="btn" href="product-detail?urun=<?php echo $_GET['urun'] ?>&sepetekle=1"><i class="fa fa-shopping-cart"></i>Sepete Ekle</a>
                                     <a class="btn" href="#"><i class="fa fa-shopping-bag"></i>Satın Al</a>
                                 </div>
                             </div>

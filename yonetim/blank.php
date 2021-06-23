@@ -2,6 +2,9 @@
 include 'navbar.php'; 
 include '../baglanti.php';
 
+$urun = $conn->query("SELECT * FROM urunler");
+$cikti = $urun->fetchAll(PDO::FETCH_ASSOC);
+
 if (isset($_POST['kaydet'])) {
   $kategori = $_POST['kategori'];
   $title = $_POST['title'];
@@ -60,7 +63,29 @@ if (isset($_POST['kaydet'])) {
   }
 
 }
-
+if(isset($_POST['sil'])){
+  $btn = $_POST['sil'];
+  $sorgux = $conn->prepare("DELETE FROM urunler WHERE id = ?");
+  $sorgux->bindParam(1,$btn,PDO::PARAM_INT);
+  $sorgux->execute();
+  if ($sorgux->rowCount()>0) {
+    $alert = array
+      (
+        'type' => "success",
+        'msg' => "Ürün başarıyla silindi.",
+        'second' => "2",
+        'url' => "blank.php"
+      );
+  }else{
+    $alert = array
+      (
+        'type' => "danger",
+        'msg' => "Ürün silinirken bir hata ile karşılaşıldı.",
+        'second' => "2",
+        'url' => "blank.php"
+      );
+  } 
+}
 ?>
 
 <!-- Content Wrapper. Contains page content -->
@@ -138,6 +163,44 @@ if (isset($_POST['kaydet'])) {
             <button type="submit" class="btn btn-primary" name="kaydet">Kaydet</button>
           </div>
         </form>
+        <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Ürünler</h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body p-0">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th style="width: 10px">#</th>
+                <th>Ürün Adı</th>
+                <th>Ürün Kategori</th>
+                <th>Ürün Fiyat</th>
+                <th>Sil</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($cikti as $k) { ?>
+                <tr>
+                  <td><?php echo $k['id']?></td>
+                  <td><?php echo $k['title']?></td>
+                  <td><?php
+
+                  $kategorisorgu = $conn->prepare("SELECT * FROM kategoriler WHERE id=:id");
+                  $kategorisorgu->execute(array('id'=>$k['kategori']));
+                  $kat = $kategorisorgu->fetch(PDO::FETCH_ASSOC);
+
+                  echo $kat['adi'];
+                   ?></td>
+                  <td><span class="badge bg-primary"><?php echo $k['amount'] ?></span></td>
+                  <form action="" method="POST"><td><button type="submit" class="btn btn-block btn-danger" name="sil" value="<?php echo $k['id']?>">Sil</button></td></form>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
       </div>
     </div>
   </section>

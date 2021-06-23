@@ -1,5 +1,6 @@
 <?php include 'header.php'; 
       include 'navbar.php';
+
 ?>
 
   <!-- Content Wrapper. Contains page content -->
@@ -13,8 +14,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Dashboard v1</li>
+              <li class="breadcrumb-item"><a href="index.php">Anasayfa</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -31,9 +32,10 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <?php $urunsorgu = $conn->query("SELECT * FROM urunler"); ?>
+                <h3><?php echo $urunsorgu->rowCount(); ?></h3>
 
-                <p>New Orders</p>
+                <p>Ürün</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -61,9 +63,10 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+                <?php $uyesorgu = $conn->query("SELECT * FROM uyeler"); ?>
+                <h3><?php echo $uyesorgu->rowCount(); ?></h3>
 
-                <p>User Registrations</p>
+                <p>Üye</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>

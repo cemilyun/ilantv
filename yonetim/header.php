@@ -2,9 +2,10 @@
 session_start();
 if (empty($_SESSION["mail"])) {
   header("Location:login.php");
+  exit;
 }
-
- ?>
+include '../baglanti.php';
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,6 +34,9 @@ if (empty($_SESSION["mail"])) {
   <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -52,7 +56,9 @@ if (empty($_SESSION["mail"])) {
       <li class="nav-item d-none d-sm-inline-block">
         <a href="index.php" class="nav-link">Anasayfa</a>
       </li>
-      
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="../index.php" class="nav-link" target="_blank">Siteye Git</a>
+      </li>
     </ul>
 
     <!-- Right navbar links -->

@@ -105,7 +105,7 @@ session_start();
                     </div>
                     <div class="col-md-6">
                         <div class="search">
-                            <input type="text" placeholder="Search">
+                            <input type="text" placeholder="Arama Yap">
                             <button><i class="fa fa-search"></i></button>
                         </div>
                     </div>
@@ -113,7 +113,13 @@ session_start();
                         <div class="user">
                             <a href="cart.php" class="btn cart">
                                 <i class="fa fa-shopping-cart"></i>
-                                <span>(0)</span>
+                                <span>(<?php
+                                if (isset($_COOKIE['urun'])) {
+                                    echo count($_COOKIE['urun']);
+                                } else {
+                                    echo "0";
+                                }
+                                ?>)</span>
                             </a>
                         </div>
                     </div>
