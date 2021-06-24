@@ -1,5 +1,6 @@
 <?php include 'topbar.php'; 
 include 'baglanti.php';
+
 $sorgu = $conn->query("SELECT * FROM kategoriler");
 $cikti = $sorgu->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -8,142 +9,171 @@ $cikti = $sorgu->fetchAll(PDO::FETCH_ASSOC);
     <div class="container-fluid">
         <ul class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.php">Anasayfa</a></li>
-            <li class="breadcrumb-item"><a href="#">Products</a></li>
-            <li class="breadcrumb-item active">Product List</li>
-        </ul>
+            <li class="breadcrumb-item"><a href="product-list.php?kategori=<?php echo $_GET['kategori'] ?>">
+                <?php $katsor = $conn->prepare("SELECT adi FROM kategoriler WHERE id = ?");
+                $katsor->bindParam(1,$_GET['kategori'],PDO::PARAM_INT);
+                $katsor->execute();
+                $katcikti = $katsor->fetch(PDO::FETCH_ASSOC);
+                echo $katcikti['adi'];?></a></li>
+            </ul>
+        </div>
     </div>
-</div>
-<!-- Breadcrumb End -->
+    <!-- Breadcrumb End -->
 
-<!-- Product List Start -->
-<div class="product-view">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="product-view-top">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="product-search">
-                                        <input type="email" value="Search">
-                                        <button><i class="fa fa-search"></i></button>
+    <!-- Product List Start -->
+    <div class="product-view">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="product-view-top">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="product-search">
+                                            <input type="email" value="Search">
+                                            <button><i class="fa fa-search"></i></button>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="product-short">
-                                        <div class="dropdown">
-                                            <div class="dropdown-toggle" data-toggle="dropdown">Product short by</div>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a href="#" class="dropdown-item">Newest</a>
-                                                <a href="#" class="dropdown-item">Popular</a>
-                                                <a href="#" class="dropdown-item">Most sale</a>
+                                    <div class="col-md-4">
+                                        <div class="product-short">
+                                            <div class="dropdown">
+                                                <div class="dropdown-toggle" data-toggle="dropdown">Product short by</div>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a href="#" class="dropdown-item">Newest</a>
+                                                    <a href="#" class="dropdown-item">Popular</a>
+                                                    <a href="#" class="dropdown-item">Most sale</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="product-price-range">
-                                        <div class="dropdown">
-                                            <div class="dropdown-toggle" data-toggle="dropdown">Product price range</div>
-                                            <div class="dropdown-menu dropdown-menu-right">
-                                                <a href="#" class="dropdown-item">$0 to $50</a>
-                                                <a href="#" class="dropdown-item">$51 to $100</a>
-                                                <a href="#" class="dropdown-item">$101 to $150</a>
-                                                <a href="#" class="dropdown-item">$151 to $200</a>
-                                                <a href="#" class="dropdown-item">$201 to $250</a>
-                                                <a href="#" class="dropdown-item">$251 to $300</a>
-                                                <a href="#" class="dropdown-item">$301 to $350</a>
-                                                <a href="#" class="dropdown-item">$351 to $400</a>
-                                                <a href="#" class="dropdown-item">$401 to $450</a>
-                                                <a href="#" class="dropdown-item">$451 to $500</a>
+                                    <div class="col-md-4">
+                                        <div class="product-price-range">
+                                            <div class="dropdown">
+                                                <div class="dropdown-toggle" data-toggle="dropdown">Product price range</div>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    <a href="#" class="dropdown-item">$0 to $50</a>
+                                                    <a href="#" class="dropdown-item">$51 to $100</a>
+                                                    <a href="#" class="dropdown-item">$101 to $150</a>
+                                                    <a href="#" class="dropdown-item">$151 to $200</a>
+                                                    <a href="#" class="dropdown-item">$201 to $250</a>
+                                                    <a href="#" class="dropdown-item">$251 to $300</a>
+                                                    <a href="#" class="dropdown-item">$301 to $350</a>
+                                                    <a href="#" class="dropdown-item">$351 to $400</a>
+                                                    <a href="#" class="dropdown-item">$401 to $450</a>
+                                                    <a href="#" class="dropdown-item">$451 to $500</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <?php $urunler = $conn->prepare("SELECT * FROM urunler where kategori=:kategori");
-                    $urunler->execute(array('kategori' => strip_tags(htmlspecialchars($_GET['kategori'])))); 
-                    while ($urun = $urunler->fetch(PDO::FETCH_ASSOC)) { ?>
-                       <div class="col-md-4">
-                        <div class="product-item">
-                            <div class="product-title">
+                        <?php
 
-                                <a href="#"><?php echo $urun['title'] ?></a>
-                            </div>
-                            <div class="product-image">
-                                <a href="product-detail?urun=<?php echo $urun['id'] ?>">
-                                    <img src="<?php echo $urun['image'] ?>" alt="Product Image" style="width: 400px; height: 230px;">
-                                </a>
-                            </div>
-                            <div class="product-price">
-                                <h3><span>₺</span><?php echo $urun['amount'] ?></h3>
-                                <a class="btn" href=""><i class="fa fa-shopping-cart"></i>Satın Al</a>
+                        $sayfada = 9;
+                        $miktarsor = $conn->prepare("SELECT * FROM urunler where kategori=:kategori");
+                        $miktarsor->execute(array('kategori' => $_GET['kategori']));
+                        $toplam_icerik = $miktarsor->rowCount();
+                        $toplam_sayfa = ceil($toplam_icerik / $sayfada);
+                        $sayfa = isset($_GET['sayfa']) ? (int) $_GET['sayfa'] : 1;
+                        if($sayfa < 1) $sayfa = 1;
+                        if($sayfa > $toplam_sayfa) $sayfa = $toplam_sayfa;
+
+                        $limit = ($sayfa - 1) * $sayfada;
+
+
+
+                        if ($toplam_icerik > 0) {
+                            $urunler = $conn->prepare('SELECT * FROM urunler where kategori=:kategori LIMIT ' . $limit . ', ' . $sayfada);
+                            $urunler->execute(array('kategori' => $_GET['kategori'])); 
+                        } else {
+                            $urunler = $conn->prepare('SELECT * FROM urunler where kategori=:kategori ');
+                        $urunler->execute(array('kategori' => $_GET['kategori'])); 
+                        }
+
+
+                        while ($urun = $urunler->fetch(PDO::FETCH_ASSOC)) { ?>
+                         <div class="col-md-4">
+                            <div class="product-item">
+                                <div class="product-title">
+
+                                    <a href="#"><?php echo $urun['title'] ?></a>
+                                </div>
+                                <div class="product-image">
+                                    <a href="product-detail?urun=<?php echo $urun['id'] ?>">
+                                        <img src="<?php echo $urun['image'] ?>" alt="Product Image" style="width: 400px; height: 230px;">
+                                    </a>
+                                </div>
+                                <div class="product-price">
+                                    <h3><span>₺</span><?php echo $urun['amount'] ?></h3>
+                                    <a class="btn" href="product-detail?urun=<?php echo $urun['id'] ?>&sepetekle=1"><i class="fa fa-shopping-cart"></i>Sepete Ekle</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php } ?>
+                    <?php } ?>
 
 
 
-            </div>
+                </div>
 
-            <!-- Pagination Start -->
-            <div class="col-md-12">
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
-            <!-- Pagination Start -->
-        </div>           
+                <!-- Pagination Start -->
+                <div class="col-md-12">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
 
-        <!-- Side Bar Start -->
-        <div class="col-lg-4 sidebar">
-            <div class="sidebar-widget category">
-                <h2 class="title">Kategoriler</h2>
-                <nav class="navbar bg-light">
-                    <ul class="navbar-nav">
-                        <?php foreach ($cikti as $k) {
-                            ?><li class="nav-item">
-                                <a class="nav-link" href="product-list?kategori=<?php echo $k["id"] ?>"><i class="fas fa-angle-right"></i><?php echo $k["adi"] ?></a>
-                                </li><?php
-                            } ?>
+                            <?php
 
+                            for($s = 1; $s <= $toplam_sayfa; $s++) {
+                                if($sayfa == $s) {
+                                    echo '<li class="page-item active"><a class="page-link" href="javascript:void(0);">'.$s.'</a></li>';
+                                } else {
+                                    echo '<li class="page-item"><a class="page-link" href="product-list?kategori='.$_GET['kategori']."&sayfa=". $s . '">'.$s.'</a></li>';
+                                }
+                            }
+
+                            ?>
                         </ul>
                     </nav>
                 </div>
+                <!-- Pagination Start -->
+            </div>           
 
+            <!-- Side Bar Start -->
+            <div class="col-lg-4 sidebar">
+                <div class="sidebar-widget category">
+                    <h2 class="title">Kategoriler</h2>
+                    <nav class="navbar bg-light">
+                        <ul class="navbar-nav">
+                            <?php foreach ($cikti as $k) {
+                                ?><li class="nav-item">
+                                    <a class="nav-link" href="product-list?kategori=<?php echo $k["id"] ?>"><i class="fas fa-angle-right"></i><?php echo $k["adi"] ?></a>
+                                    </li><?php
+                                } ?>
+
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+                <!-- Side Bar End -->
             </div>
-            <!-- Side Bar End -->
         </div>
     </div>
-</div>
-<!-- Product List End -->  
+    <!-- Product List End -->  
 
-<!-- Brand Start -->
-<div class="brand">
-    <div class="container-fluid">
-        <div class="brand-slider">
-            <div class="brand-item"><img src="img/brand-1.png" alt=""></div>
-            <div class="brand-item"><img src="img/brand-2.png" alt=""></div>
-            <div class="brand-item"><img src="img/brand-3.png" alt=""></div>
-            <div class="brand-item"><img src="img/brand-4.png" alt=""></div>
-            <div class="brand-item"><img src="img/brand-5.png" alt=""></div>
-            <div class="brand-item"><img src="img/brand-6.png" alt=""></div>
+    <!-- Brand Start -->
+    <div class="brand">
+        <div class="container-fluid">
+            <div class="brand-slider">
+                <div class="brand-item"><img src="img/brand-1.png" alt=""></div>
+                <div class="brand-item"><img src="img/brand-2.png" alt=""></div>
+                <div class="brand-item"><img src="img/brand-3.png" alt=""></div>
+                <div class="brand-item"><img src="img/brand-4.png" alt=""></div>
+                <div class="brand-item"><img src="img/brand-5.png" alt=""></div>
+                <div class="brand-item"><img src="img/brand-6.png" alt=""></div>
+            </div>
         </div>
     </div>
-</div>
-<!-- Brand End -->
-<?php include 'footer.php'; ?>
+    <!-- Brand End -->
+    <?php include 'footer.php'; ?>

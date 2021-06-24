@@ -96,27 +96,29 @@ include 'baglanti.php';
 
                                     $fiyat = "0";
 
-                                    foreach ($_COOKIE['urun'] as $key => $value) {
-                                     $urunsor = $conn->prepare("SELECT * FROM urunler where id=:id");
-                                     $urunsor->execute(array('id' => $key));
-                                     $urun = $urunsor->fetch(PDO::FETCH_ASSOC);
+                                    if (isset($_COOKIE['urun'])) {
+                                        foreach ($_COOKIE['urun'] as $key => $value) {
+                                           $urunsor = $conn->prepare("SELECT * FROM urunler where id=:id");
+                                           $urunsor->execute(array('id' => $key));
+                                           $urun = $urunsor->fetch(PDO::FETCH_ASSOC);
 
-                                     $fiyat = $fiyat+$urun['amount'];
+                                           $fiyat = $fiyat+$urun['amount'];
 
-                                 }
-                                 echo $fiyat;
-                                 ?> TL</span></h2>
+                                       }
+                                   }
+                                   echo $fiyat;
+                                   ?> TL</span></h2>
+                               </div>
+                               <div class="cart-btn">
+                                 <a href="checkout"><button>Ödeme Yap</button></a>
                              </div>
-                             <div class="cart-btn">
-                                <button>Ödeme Yap</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
 </div>
 <!-- Cart End -->
 <?php

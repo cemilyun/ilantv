@@ -5,7 +5,7 @@ if (isset($_GET['sepetekle'])) {
     $urun = $_GET['urun'];
 
     setcookie('urun['.$urun.']',$urun,time() + 86400 );
-    header('location:product-detail?urun='.$urun);
+    header('location:'.$_SERVER['HTTP_REFERER']);
     exit;
 
 }

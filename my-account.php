@@ -10,8 +10,8 @@ $idcikti = $idsorgu->fetch(PDO::FETCH_ASSOC);
 extract($idcikti);
 $id = $idcikti['id'];
 $kartsorgu = $conn->query("SELECT * FROM kart_bilgileri WHERE musteri_id = '$id'");
+$kartsorgu->execute();
 $kartcikti = $kartsorgu->fetch(PDO::FETCH_ASSOC);
-extract($kartcikti);
 if(isset($_POST['bilgi_guncelle'])){
     $adi = $_POST['adi'];
     $soyadi = $_POST['soyadi'];
