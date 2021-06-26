@@ -87,7 +87,6 @@ include 'topbar.php'; ?>
                                 </div>
                                 <div class="action">
                                     <a class="btn" href="product-detail?urun=<?php echo $_GET['urun'] ?>&sepetekle=1"><i class="fa fa-shopping-cart"></i>Sepete Ekle</a>
-                                    <a class="btn" href="#"><i class="fa fa-shopping-bag"></i>Satın Al</a>
                                 </div>
                             </div>
                         </div>

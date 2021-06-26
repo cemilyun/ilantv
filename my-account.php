@@ -91,9 +91,9 @@ if(isset($_POST['sifre_guncelle'])){
     $yenipass = $_POST['yenipass'];
     $repass = $_POST['repass'];
     if(strlen($yenipass) > 5){
-    $eskipass = sha1(md5($_POST['eskipass']));
-    $yenipass = sha1(md5($_POST['yenipass']));
-    $repass = sha1(md5($_POST['repass']));
+        $eskipass = sha1(md5($_POST['eskipass']));
+        $yenipass = sha1(md5($_POST['yenipass']));
+        $repass = sha1(md5($_POST['repass']));
         if($yenipass == $repass){
            $kontrol = $conn->prepare("SELECT * FROM uyeler WHERE password =? AND mail ='$mail'");
            $kontrol->bindParam(1,$eskipass,PDO::PARAM_STR);
@@ -136,6 +136,13 @@ if(isset($_POST['sifre_guncelle'])){
     );
 }
 }
+
+$siparisler = $conn->prepare("SELECT * FROM siparisler where user=:user");
+$siparisler->execute(array('user' => $_SESSION['mail']));
+$sipariscek = $siparisler->fetch(PDO::FETCH_ASSOC);
+
+
+
 ?>
 
 <!-- Breadcrumb Start -->
@@ -177,169 +184,164 @@ if(isset($_POST['sifre_guncelle'])){
                             <table class="table table-bordered">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th>No</th>
-                                        <th>Product</th>
-                                        <th>Date</th>
-                                        <th>Price</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Ürün</th>
+                                        <th>Tarih</th>
+                                        <th>Fiyat</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Product Name</td>
-                                        <td>01 Jan 2020</td>
-                                        <td>$99</td>
-                                        <td>Approved</td>
-                                        <td><button class="btn">View</button></td>
+                                    <?php
+                                    $js = json_decode($sipariscek['sepet'],true);
+                                    $aa = "0";
+                                    foreach ($js as $key => $value) {
+                                       $urunsor = $conn->prepare("SELECT * FROM urunler where id=:id");
+                                       $urunsor->execute(array('id' => $key));
+                                       $urun = $urunsor->fetch(PDO::FETCH_ASSOC);
+                                       $aa = $aa+$urun['amount'];
+                                       ?>
+                                       <tr>
+                                        <td><?php echo $urun['title'] ?></td>
+                                        <td><?php echo $sipariscek['date'] ?></td>
+                                        <td><?php echo $urun['amount'] ?> TL</td>
                                     </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td>Product Name</td>
-                                        <td>01 Jan 2020</td>
-                                        <td>$99</td>
-                                        <td>Approved</td>
-                                        <td><button class="btn">View</button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td>Product Name</td>
-                                        <td>01 Jan 2020</td>
-                                        <td>$99</td>
-                                        <td>Approved</td>
-                                        <td><button class="btn">View</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <?php } ?>
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td>Toplam Ücret:</td>
+                                    <td><?php echo $aa; ?> TL</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="payment-tab" role="tabpanel" aria-labelledby="payment-nav">
+                    <h4>Kart Bilgileri</h4>
+                    <form action="" method="POST">
+                        <?php
+                        if (isset($alertkart)) { ?>
+                            <div class="alert alert-<?php echo $alertkart['type'] ?>"><?php echo $alertkart['msg'] ?></div>                     
+                        <?php } ?>
+                        <div class="row">
+                            <div>
+                                <label>Kart Sahibi:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="kart_sahibi" value="<?php echo $kartcikti['kart_sahibi'] ?>" placeholder="Kart Sahibi">
+                            </div>
                         </div>
-                    </div>
-                    <div class="tab-pane fade" id="payment-tab" role="tabpanel" aria-labelledby="payment-nav">
-                        <h4>Kart Bilgileri</h4>
-                        <form action="" method="POST">
-                            <?php
-                            if (isset($alertkart)) { ?>
-                                <div class="alert alert-<?php echo $alertkart['type'] ?>"><?php echo $alertkart['msg'] ?></div>                     
-                            <?php } ?>
-                            <div class="row">
-                                <div>
-                                    <label>Kart Sahibi:</label>
+                        <div class="row">
+                            <div>
+                                <label>Kart Numarası:</label>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="kart_no" value="<?php echo $kartcikti['kart_no'] ?>" placeholder="Kart No">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <label>Son Kullanma Tarihi:</label>
+                            </div>
+                            <div class="col-md-1">
+                                <input class="form-control" type="text" name="kart_skt_ay" value="<?php echo $kartcikti['kart_skt_ay'] ?>" placeholder="Ay">
+                            </div>
+                            <label style="font-size:25px"> / </label>
+                            <div class="col-md-1">
+                                <input class="form-control" type="text" name="kart_skt_yil" value="<?php echo $kartcikti['kart_skt_yil'] ?>" placeholder="Yıl">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <label>CVV:</label>
+                            </div>
+                            <div class="col-md-1">
+                                <input class="form-control" type="text" name="kart_cvv" value="<?php echo $kartcikti['kart_cvv'] ?>" placeholder="CVV">
+                            </div>
+                        </div>
+                        <button type="submit" name="kart_kaydet" class="btn">Kaydet</button>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="address-tab" role="tabpanel" aria-labelledby="address-nav">
+                    <h4>Adres</h4>
+                    <form action="" method="POST">
+                        <?php
+                        if (isset($alertadres)) { ?>
+                            <div class="alert alert-<?php echo $alertadres['type'] ?>"><?php echo $alertadres['msg'] ?></div>                     
+                        <?php } ?>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    Adres Başlığı:<input class="form-control" type="text" name="baslik" value="<?php echo $adres_baslik ?>" placeholder="Adres Başlığı">
                                 </div>
                                 <div class="col-md-6">
-                                    <input class="form-control" type="text" name="kart_sahibi" value="<?php echo $kart_sahibi ?>" placeholder="Kart Sahibi">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <label>Kart Numarası:</label>
+                                    Adres:<textarea class="form-control" type="text" name="adres" placeholder="Adres"><?php echo $adres ?></textarea>
                                 </div>
                                 <div class="col-md-6">
-                                    <input class="form-control" type="text" name="kart_no" value="<?php echo $kart_no ?>" placeholder="Kart No">
+                                    Telefon:<input class="form-control" type="text" name="telefon" value="<?php echo $telefon ?>" placeholder="Telefon">
                                 </div>
+                                <button type="submit" name="adres_guncelle" class="btn">Kaydet</button>
                             </div>
-                            <div class="row">
-                                <div>
-                                    <label>Son Kullanma Tarihi:</label>
-                                </div>
-                                <div class="col-md-1">
-                                    <input class="form-control" type="text" name="kart_skt_ay" value="<?php echo $kart_skt_ay ?>" placeholder="Ay">
-                                </div>
-                                <label style="font-size:25px"> / </label>
-                                <div class="col-md-1">
-                                    <input class="form-control" type="text" name="kart_skt_yil" value="<?php echo $kart_skt_yil ?>" placeholder="Yıl">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div>
-                                    <label>CVV:</label>
-                                </div>
-                                <div class="col-md-1">
-                                    <input class="form-control" type="text" name="kart_cvv" value="<?php echo $kart_cvv ?>" placeholder="CVV">
-                                </div>
-                            </div>
-                            <button type="submit" name="kart_kaydet" class="btn">Kaydet</button>
-                        </form>
-                    </div>
-                    <div class="tab-pane fade" id="address-tab" role="tabpanel" aria-labelledby="address-nav">
-                        <h4>Adres</h4>
-                        <form action="" method="POST">
-                            <?php
-                            if (isset($alertadres)) { ?>
-                                <div class="alert alert-<?php echo $alertadres['type'] ?>"><?php echo $alertadres['msg'] ?></div>                     
-                            <?php } ?>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="col-md-6">
-                                        Adres Başlığı:<input class="form-control" type="text" name="baslik" value="<?php echo $adres_baslik ?>" placeholder="Adres Başlığı">
-                                    </div>
-                                    <div class="col-md-6">
-                                        Adres:<textarea class="form-control" type="text" name="adres" placeholder="Adres"><?php echo $adres ?></textarea>
-                                    </div>
-                                    <div class="col-md-6">
-                                        Telefon:<input class="form-control" type="text" name="telefon" value="<?php echo $telefon ?>" placeholder="Telefon">
-                                    </div>
-                                    <button type="submit" name="adres_guncelle" class="btn">Kaydet</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                    </form>
+                </div>
 
-                    <div class="tab-pane fade" id="account-tab" role="tabpanel" aria-labelledby="account-nav">
-                        <h4>Hesap Detayları</h4>
-                        <form action="" method="POST">
-                            <?php
-                            if (isset($alert)) { ?>
-                                <div class="alert alert-<?php echo $alert['type'] ?>"><?php echo $alert['msg'] ?></div>                     
-                            <?php } ?>
-                            <div class="row">
+                <div class="tab-pane fade" id="account-tab" role="tabpanel" aria-labelledby="account-nav">
+                    <h4>Hesap Detayları</h4>
+                    <form action="" method="POST">
+                        <?php
+                        if (isset($alert)) { ?>
+                            <div class="alert alert-<?php echo $alert['type'] ?>"><?php echo $alert['msg'] ?></div>                     
+                        <?php } ?>
+                        <div class="row">
 
-                                <div class="col-md-6">
-                                    <input class="form-control" type="text" name="adi" value="<?php echo $adi ?>" placeholder="Adınız">
-                                </div>
-                                <div class="col-md-6">
-                                    <input class="form-control" type="text" name="soyadi" value="<?php echo $soyadi ?>" placeholder="Soyadınız">
-                                </div>
-                                <div class="col-md-6">
-                                    <input class="form-control" type="text" name="telefon" value="<?php echo $telefon ?>" placeholder="Telefon Numaranız">
-                                </div>
-                                <div class="col-md-6">
-                                    <input class="form-control" type="text" name="mail" value="<?php echo $mail ?>" placeholder="Email" disabled>
-                                </div>
-                                <div class="col-md-12">
-                                    <input class="form-control" type="text" value="Üyelik Tarihi: <?php echo $date ?>" placeholder="Üyelik Tarihi" disabled>
-                                </div>
-                                <div class="col-md-12">
-                                    <button type="submit" name="bilgi_guncelle" class="btn">Bilgileri Güncelle</button>
-                                    <br><br>
-                                </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="adi" value="<?php echo $adi ?>" placeholder="Adınız">
                             </div>
-                        </form>
-                        <h4>Şifre Değiştirme</h4>
-                        <form action="" method="POST">
-                            <?php
-                            if (isset($alertpass)) { ?>
-                                <div class="alert alert-<?php echo $alertpass['type'] ?>"><?php echo $alertpass['msg'] ?></div>                     
-                            <?php } ?>
-                            <div class="row"> 
-                                <div class="col-md-12">
-                                    <input class="form-control" type="password" name="eskipass" placeholder="Eski Şifreniz" required="">
-                                </div>
-                                <div class="col-md-6">
-                                    <input class="form-control" type="password" name="yenipass" placeholder="Yeni Şifreniz" required="">
-                                </div>
-                                <div class="col-md-6">
-                                    <input class="form-control" type="password" name="repass" placeholder="Şifrenizi Onaylayın" required="">
-                                </div>
-                                <div class="col-md-12">
-                                    <button type="submit" name="sifre_guncelle" class="btn">Şifreyi Değiştir</button>
-                                </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="soyadi" value="<?php echo $soyadi ?>" placeholder="Soyadınız">
                             </div>
-                        </form>
-                    </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="telefon" value="<?php echo $telefon ?>" placeholder="Telefon Numaranız">
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="mail" value="<?php echo $mail ?>" placeholder="Email" disabled>
+                            </div>
+                            <div class="col-md-12">
+                                <input class="form-control" type="text" value="Üyelik Tarihi: <?php echo $date ?>" placeholder="Üyelik Tarihi" disabled>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" name="bilgi_guncelle" class="btn">Bilgileri Güncelle</button>
+                                <br><br>
+                            </div>
+                        </div>
+                    </form>
+                    <h4>Şifre Değiştirme</h4>
+                    <form action="" method="POST">
+                        <?php
+                        if (isset($alertpass)) { ?>
+                            <div class="alert alert-<?php echo $alertpass['type'] ?>"><?php echo $alertpass['msg'] ?></div>                     
+                        <?php } ?>
+                        <div class="row"> 
+                            <div class="col-md-12">
+                                <input class="form-control" type="password" name="eskipass" placeholder="Eski Şifreniz" required="">
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="password" name="yenipass" placeholder="Yeni Şifreniz" required="">
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control" type="password" name="repass" placeholder="Şifrenizi Onaylayın" required="">
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" name="sifre_guncelle" class="btn">Şifreyi Değiştir</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 <!-- My Account End -->
 

@@ -22,8 +22,7 @@ include 'baglanti.php';
 <div class="breadcrumb-wrap">
     <div class="container-fluid">
         <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php">Anasayfa</a></li>
-            <li class="breadcrumb-item"><a href="product-list.php">İlanlar</a></li>
+            <li class="breadcrumb-item"><a href="index">Anasayfa</a></li>
             <li class="breadcrumb-item active">Sepet</li>
         </ul>
     </div>

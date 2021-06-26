@@ -82,6 +82,14 @@
             </ul>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="kategori.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Siparişler</p>
+                </a>
+              </li>
+            </ul>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
                 <a href="iletisim.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>İletişim</p>
@@ -110,12 +118,6 @@
                 <a href="mailbox.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Gelen Kutusu</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="read-mail.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Okunmuş</p>
                 </a>
               </li>
             </ul>
